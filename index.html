@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bumi Berputar</title>
+    <style>
+        /* Agar halaman tidak memiliki margin, dan canvas fullscreen */
+        body { margin: 0; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <!-- Sertakan library Three.js dari CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // Buat scene, kamera, dan renderer
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Muat tekstur Bumi
+        const textureLoader = new THREE.TextureLoader();
+        const earthTexture = textureLoader.load('unnamed.png'); // Link tekstur Bumi
+
+        // Buat geometri bola untuk Bumi
+        const geometry = new THREE.SphereGeometry(2, 32, 32); // Radius 2, segmen 32
+        const material = new THREE.MeshBasicMaterial({ map: earthTexture }); // Pakaikan tekstur
+        const earth = new THREE.Mesh(geometry, material);
+        scene.add(earth);
+
+        // Atur posisi kamera
+        camera.position.z = 5;
+
+        // Fungsi animasi untuk memutar Bumi
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Memutar Bumi di sumbu Y (horizontal)
+            earth.rotation.y += 0.01;
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Atur ulang ukuran canvas jika ukuran jendela berubah
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
+</html>
